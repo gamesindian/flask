@@ -1,0 +1,47 @@
+{
+  "name": "@rediads/renderer",
+  "version": "1.0.0",
+  "description": "Prebid.js outstream video renderer powered by Google IMA SDK with polished UI/UX",
+  "type": "module",
+  "main": "./dist/rediads-renderer.umd.cjs",
+  "module": "./dist/rediads-renderer.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/rediads-renderer.js",
+      "require": "./dist/rediads-renderer.umd.cjs"
+    },
+    "./style.css": "./dist/rediads-renderer.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "prebid",
+    "prebid.js",
+    "outstream",
+    "video",
+    "ima",
+    "ima-sdk",
+    "vast",
+    "header-bidding",
+    "renderer"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rediads/renderer.git"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vite-plugin-dts": "^4.5.4"
+  }
+}
