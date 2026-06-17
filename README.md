@@ -202,10 +202,27 @@ const safeRenderer = rediads.createSafeRenderer({
 
 ```bash
 npm install
-npm run dev      # examples/index.html + examples/minimal.html
-npm run build    # outputs dist/
+npm run dev          # examples dev server
+npm run dev:test     # opens test page directly
+npm run build        # outputs dist/
 npm run typecheck
 ```
+
+### Test page
+
+Open `examples/test.html` via the dev server:
+
+```bash
+npm run dev:test
+# → http://localhost:5173/test.html
+```
+
+The test page includes:
+
+- **Direct render** — tests `renderOutstream()` with Google sample VAST tags
+- **Mock Prebid flow** — tests `enableOutstream()` with a simulated `pbjs`
+- Player option toggles (muted, viewable autoplay, controls, etc.)
+- Live event log
 
 ## Project structure
 
@@ -219,7 +236,10 @@ src/
   styles.css    # player styles (auto-injected in UMD build)
 examples/
   minimal.html  # copy-paste publisher example
-  index.html    # IMA demo (no Prebid)
+  index.html    # examples landing page
+  test.html     # interactive test page (VAST presets + mock Prebid)
+  demo.html     # IMA direct render demo
+  minimal.html  # copy-paste publisher example
 ```
 
 ## License

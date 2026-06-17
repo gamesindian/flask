@@ -19,6 +19,7 @@
   ],
   "scripts": {
     "dev": "vite",
+    "dev:test": "vite --open /test.html",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit"

@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rediads Renderer — Test Page</title>
+    <style>
+      :root {
+        --bg: #0f1419;
+        --panel: #1a2332;
+        --border: #2d3a4f;
+        --text: #e8edf5;
+        --muted: #8b9cb3;
+        --accent: #4f8cff;
+        --accent-hover: #6ba0ff;
+        --success: #34d399;
+        --error: #f87171;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.5;
+      }
+
+      header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--border);
+        background: var(--panel);
+      }
+
+      header h1 {
+        margin: 0 0 4px;
+        font-size: 1.35rem;
+        font-weight: 700;
+      }
+
+      header p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        min-height: calc(100vh - 80px);
+      }
+
+      @media (max-width: 960px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      aside {
+        padding: 20px;
+        border-right: 1px solid var(--border);
+        background: var(--panel);
+        overflow-y: auto;
+      }
+
+      main {
+        padding: 24px;
+        overflow-y: auto;
+      }
+
+      .section {
+        margin-bottom: 24px;
+      }
+
+      .section h2 {
+        margin: 0 0 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+      }
+
+      label {
+        display: block;
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+
+      select,
+      input[type='text'],
+      textarea {
+        width: 100%;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--text);
+        font-size: 0.85rem;
+        margin-bottom: 12px;
+      }
+
+      textarea {
+        min-height: 72px;
+        resize: vertical;
+        font-family: ui-monospace, monospace;
+        font-size: 0.75rem;
+      }
+
+      .checks {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .checks label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+        color: var(--text);
+        cursor: pointer;
+        font-size: 0.85rem;
+      }
+
+      .btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      button {
+        padding: 9px 14px;
+        border: 0;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+
+      button.primary {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      button.primary:hover {
+        background: var(--accent-hover);
+      }
+
+      button.secondary {
+        background: var(--border);
+        color: var(--text);
+      }
+
+      button.secondary:hover {
+        background: #3d4f6a;
+      }
+
+      button.danger {
+        background: #7f1d1d;
+        color: #fecaca;
+      }
+
+      .article-mock {
+        max-width: 680px;
+        margin: 0 auto;
+        background: #fff;
+        color: #1a1a1a;
+        border-radius: 12px;
+        padding: 28px 32px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+      }
+
+      .article-mock h2 {
+        margin: 0 0 12px;
+        font-size: 1.5rem;
+        color: #111;
+        text-transform: none;
+        letter-spacing: normal;
+      }
+
+      .article-mock p {
+        margin: 0 0 16px;
+        color: #444;
+        font-size: 1rem;
+        line-height: 1.7;
+      }
+
+      .slot-wrap {
+        margin: 20px 0;
+        min-height: 200px;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 8px;
+      }
+
+      .badge.direct {
+        background: #1e3a5f;
+        color: #93c5fd;
+      }
+
+      .badge.prebid {
+        background: #3b1f4a;
+        color: #e9b8ff;
+      }
+
+      #event-log {
+        margin-top: 24px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px;
+        max-height: 220px;
+        overflow-y: auto;
+        font-family: ui-monospace, monospace;
+        font-size: 0.75rem;
+      }
+
+      #event-log .line {
+        padding: 2px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      }
+
+      #event-log .line .type {
+        color: var(--accent);
+      }
+
+      #event-log .line.error .type {
+        color: var(--error);
+      }
+
+      #event-log .line.complete .type {
+        color: var(--success);
+      }
+
+      .status {
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-top: 8px;
+      }
+
+      .status.ok {
+        color: var(--success);
+      }
+
+      .status.err {
+        color: var(--error);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Rediads Outstream — Test Page</h1>
+      <p>Test direct rendering and the publisher <code>enableOutstream()</code> flow with a mock Prebid.js</p>
+    </header>
+
+    <div class="layout">
+      <aside>
+        <div class="section">
+          <h2>VAST source</h2>
+          <label for="vast-preset">Sample tag</label>
+          <select id="vast-preset">
+            <option value="linear">Google IMA — Linear</option>
+            <option value="skippable">Google IMA — Skippable</option>
+            <option value="vpaid">Google IMA — VPAID 2 JS</option>
+            <option value="custom">Custom URL</option>
+          </select>
+          <label for="vast-url">VAST URL</label>
+          <input type="text" id="vast-url" />
+        </div>
+
+        <div class="section">
+          <h2>Player options</h2>
+          <div class="checks">
+            <label><input type="checkbox" id="opt-muted" checked /> Muted</label>
+            <label><input type="checkbox" id="opt-controls" checked /> Show controls</label>
+            <label><input type="checkbox" id="opt-close" checked /> Show close button</label>
+            <label
+              ><input type="radio" name="autoplay" id="opt-viewable" value="viewable" checked />
+              Autoplay when viewable</label
+            >
+            <label
+              ><input type="radio" name="autoplay" id="opt-autoplay-on" value="true" /> Autoplay
+              immediately</label
+            >
+            <label
+              ><input type="radio" name="autoplay" id="opt-autoplay-off" value="false" /> Click to
+              play</label
+            >
+          </div>
+          <label for="opt-ad-text">Ad label</label>
+          <input type="text" id="opt-ad-text" value="Advertisement" />
+        </div>
+
+        <div class="section">
+          <h2>Run tests</h2>
+          <div class="btn-row">
+            <button class="primary" id="btn-direct">Direct render</button>
+            <button class="primary" id="btn-prebid">Mock Prebid flow</button>
+          </div>
+          <div class="btn-row" style="margin-top: 8px">
+            <button class="secondary" id="btn-clear-log">Clear log</button>
+            <button class="danger" id="btn-reset">Reset slot</button>
+          </div>
+          <p class="status" id="status"></p>
+        </div>
+      </aside>
+
+      <main>
+        <div class="article-mock">
+          <h2>Sample news article</h2>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Outstream video appears between
+            paragraphs — scroll down to test viewability-triggered autoplay.
+          </p>
+
+          <div class="slot-wrap">
+            <span class="badge direct" id="mode-badge">Ready</span>
+            <div id="video1"></div>
+          </div>
+
+          <p>
+            More article content below the ad slot. The player should not autoplay until at least 50%
+            of it is visible when "Autoplay when viewable" is selected.
+          </p>
+          <p>
+            Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+            laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis.
+          </p>
+        </div>
+
+        <div class="section" style="max-width: 680px; margin: 24px auto 0">
+          <h2 style="color: var(--muted)">Event log</h2>
+          <div id="event-log"></div>
+        </div>
+      </main>
+    </div>
+
+    <script type="module">
+      import rediads from '../src/index.ts';
+
+      const VAST_PRESETS = {
+        linear:
+          'https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=sample_ct%3Dlinear&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&correlator=',
+        skippable:
+          'https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=sample_ct%3Dskippablelinear&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&correlator=',
+        vpaid:
+          'https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=sample_ct%3Dlinearvpaid2js&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&correlator=',
+      };
+
+      const SLOT_ID = 'video1';
+      const logEl = document.getElementById('event-log');
+      const statusEl = document.getElementById('status');
+      const badgeEl = document.getElementById('mode-badge');
+      let activePlayer = null;
+
+      function correlator(url) {
+        return url + Date.now();
+      }
+
+      function getVastUrl() {
+        const preset = document.getElementById('vast-preset').value;
+        const custom = document.getElementById('vast-url').value.trim();
+        if (preset === 'custom') return correlator(custom);
+        return correlator(VAST_PRESETS[preset] || VAST_PRESETS.linear);
+      }
+
+      function getRendererConfig() {
+        const autoplayRadio = document.querySelector('input[name="autoplay"]:checked');
+        let autoplay = 'viewable';
+        if (autoplayRadio?.value === 'true') autoplay = true;
+        if (autoplayRadio?.value === 'false') autoplay = false;
+
+        return {
+          adText: document.getElementById('opt-ad-text').value || 'Advertisement',
+          muted: document.getElementById('opt-muted').checked,
+          showControls: document.getElementById('opt-controls').checked,
+          showCloseButton: document.getElementById('opt-close').checked,
+          autoplay,
+          onEvent: logEvent,
+        };
+      }
+
+      function logEvent(event) {
+        const line = document.createElement('div');
+        line.className = 'line';
+        if (event.type === 'error') line.classList.add('error');
+        if (event.type === 'complete' || event.type === 'closed') line.classList.add('complete');
+
+        const time = new Date().toLocaleTimeString();
+        line.innerHTML = `<span class="type">${event.type}</span> <span class="time">${time}</span>${
+          event.message ? ` — ${event.message}` : ''
+        }`;
+        logEl.prepend(line);
+      }
+
+      function setStatus(msg, type = '') {
+        statusEl.textContent = msg;
+        statusEl.className = 'status ' + type;
+      }
+
+      function setBadge(text, mode) {
+        badgeEl.textContent = text;
+        badgeEl.className = 'badge ' + mode;
+      }
+
+      function resetSlot() {
+        if (activePlayer?.destroy) {
+          activePlayer.destroy();
+          activePlayer = null;
+        }
+        document.getElementById(SLOT_ID).innerHTML = '';
+        setBadge('Ready', 'direct');
+        setStatus('');
+      }
+
+      function runDirect() {
+        resetSlot();
+        setBadge('Direct render', 'direct');
+        setStatus('Loading ad via renderOutstream()…');
+
+        try {
+          activePlayer = rediads.renderOutstream(
+            {
+              adUnitCode: SLOT_ID,
+              adId: `direct-${Date.now()}`,
+              vastUrl: getVastUrl(),
+              width: 640,
+              height: 360,
+              mediaType: 'video',
+            },
+            document.getElementById(SLOT_ID),
+            getRendererConfig()
+          );
+          setStatus('Direct render started', 'ok');
+          logEvent({ type: 'test', message: 'Direct render invoked' });
+        } catch (error) {
+          setStatus(error.message, 'err');
+          logEvent({ type: 'error', message: error.message });
+        }
+      }
+
+      function installMockPbjs(vastUrl) {
+        const mockBids = {};
+
+        const pbjs = {
+          que: [],
+          adUnits: [],
+          addAdUnits(units) {
+            this.adUnits.push(...units);
+            logEvent({ type: 'mock-pbjs', message: `addAdUnits(${units.map((u) => u.code).join(', ')})` });
+          },
+          requestBids({ adUnitCodes, timeout, bidsBackHandler }) {
+            logEvent({
+              type: 'mock-pbjs',
+              message: `requestBids([${adUnitCodes.join(', ')}], timeout=${timeout})`,
+            });
+
+            setTimeout(() => {
+              for (const code of adUnitCodes) {
+                const adId = `mock-${code}-${Date.now()}`;
+                mockBids[adId] = {
+                  adId,
+                  adUnitCode: code,
+                  vastUrl,
+                  width: 640,
+                  height: 360,
+                  mediaType: 'video',
+                  cpm: 2.5,
+                };
+              }
+              bidsBackHandler();
+            }, 150);
+          },
+          getHighestCpmBids(code) {
+            return Object.values(mockBids).filter((b) => b.adUnitCode === code);
+          },
+          renderAd(doc, adId) {
+            const bid = mockBids[adId];
+            if (!bid) {
+              logEvent({ type: 'error', message: `Mock renderAd: unknown adId ${adId}` });
+              return;
+            }
+
+            const unit = this.adUnits.find((u) => u.code === bid.adUnitCode);
+            const renderer = unit?.mediaTypes?.video?.renderer;
+            if (!renderer?.render) {
+              logEvent({ type: 'error', message: 'No renderer on ad unit' });
+              return;
+            }
+
+            logEvent({ type: 'mock-pbjs', message: `renderAd(${adId})` });
+            renderer.render(bid, doc);
+          },
+        };
+
+        window.pbjs = pbjs;
+        pbjs.que.forEach((fn) => fn(pbjs));
+        pbjs.que.push = function (fn) {
+          Array.prototype.push.call(this, fn);
+          fn(pbjs);
+        };
+
+        return pbjs;
+      }
+
+      function runMockPrebid() {
+        resetSlot();
+        setBadge('Mock Prebid', 'prebid');
+        setStatus('Running enableOutstream() with mock pbjs…');
+
+        const vastUrl = getVastUrl();
+        installMockPbjs(vastUrl);
+
+        try {
+          rediads.enableOutstream({
+            ...getRendererConfig(),
+            timeout: 1000,
+            slots: [
+              {
+                code: SLOT_ID,
+                size: [640, 360],
+                bidders: [{ bidder: 'mockBidder', params: { placementId: 'test-123' } }],
+              },
+            ],
+          });
+          setStatus('Mock Prebid flow started', 'ok');
+          logEvent({ type: 'test', message: 'enableOutstream() with mock pbjs' });
+        } catch (error) {
+          setStatus(error.message, 'err');
+          logEvent({ type: 'error', message: error.message });
+        }
+      }
+
+      // Preset URL sync
+      const presetEl = document.getElementById('vast-preset');
+      const urlEl = document.getElementById('vast-url');
+
+      function syncVastUrl() {
+        const preset = presetEl.value;
+        if (preset !== 'custom') {
+          urlEl.value = VAST_PRESETS[preset];
+        }
+      }
+
+      presetEl.addEventListener('change', syncVastUrl);
+      syncVastUrl();
+
+      document.getElementById('btn-direct').addEventListener('click', runDirect);
+      document.getElementById('btn-prebid').addEventListener('click', runMockPrebid);
+      document.getElementById('btn-reset').addEventListener('click', resetSlot);
+      document.getElementById('btn-clear-log').addEventListener('click', () => {
+        logEl.innerHTML = '';
+      });
+
+      logEvent({ type: 'ready', message: 'Test page loaded — pick a test and click Run' });
+    </script>
+  </body>
+</html>
