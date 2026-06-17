@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rediads — Minimal Publisher Integration</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 720px;
+        margin: 40px auto;
+        padding: 0 16px;
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Article headline</h1>
+    <p>First paragraph of content…</p>
+
+    <!-- 1. Add a div (id = ad unit code) -->
+    <div id="video1"></div>
+
+    <p>Second paragraph of content…</p>
+
+    <!-- 2. Load Prebid + Rediads (one script, CSS auto-injected) -->
+    <script async src="https://cdn.jsdelivr.net/npm/prebid.js@latest/dist/not-for-prod/prebid.js"></script>
+    <script
+      type="module"
+      src="../src/index.ts"
+      data-rediads-auto='{
+        "slots": [{
+          "code": "video1",
+          "bidders": [{ "bidder": "appnexus", "params": { "placementId": "13232361" } }]
+        }]
+      }'
+    ></script>
+
+    <!--
+      Alternative: explicit init (no data-rediads-auto)
+
+      <script src="https://cdn.yoursite.com/rediads-renderer.umd.cjs"></script>
+      <script>
+        rediads.enableOutstream({
+          slots: [{
+            code: 'video1',
+            bidders: [{ bidder: 'appnexus', params: { placementId: 'YOUR_ID' } }],
+          }],
+        });
+      </script>
+    -->
+  </body>
+</html>

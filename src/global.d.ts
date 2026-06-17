@@ -1,19 +1,23 @@
 export {};
 
-declare global {
-  interface Window {
-    RediadsRenderer?: RediadsRendererApi;
-    google?: GoogleIma;
-    pbRenderInFrame?: (payload: import('./types').SafeRendererPayload) => void;
-  }
-}
-
 export interface RediadsRendererApi {
   renderOutstream: typeof import('./player').renderOutstream;
   renderBid: typeof import('./prebid').renderBid;
   createRenderer: typeof import('./prebid').createRenderer;
   createSafeRenderer: typeof import('./prebid').createSafeRenderer;
   registerSafeRenderer: typeof import('./prebid').registerSafeRenderer;
+  enableOutstream: typeof import('./bootstrap').enableOutstream;
+  autoInitFromScript: typeof import('./bootstrap').autoInitFromScript;
+}
+
+declare global {
+  interface Window {
+    RediadsRenderer?: RediadsRendererApi;
+    /** Publisher-friendly global alias */
+    rediads?: RediadsRendererApi;
+    google?: GoogleIma;
+    pbRenderInFrame?: (payload: import('./types').SafeRendererPayload) => void;
+  }
 }
 
 export interface GoogleIma {
